@@ -42,6 +42,25 @@ module.exports = {
                     { body: commands },
                 );
                 console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+                const addition = {
+                    guildId: `${guild.id}`,
+                }
+                fs.readFile("./config.json", "utf8", function readFileCallback(err, data) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      var obj = JSON.parse(data); //now converting it to an object
+                      obj.Guilds.push(addition); //adding the data
+                      var json = JSON.stringify(obj, null, 2); //converting it back to json
+                      fs.writeFile("./config.json", json, "utf8", (err) => {
+                        if (err) {
+                          console.log(err);
+                        } else {
+                          console.log("Done");
+                        }
+                      });
+                    }
+                  });
             }
             catch (error) {
                 // And of course, make sure you catch and log any errors!
