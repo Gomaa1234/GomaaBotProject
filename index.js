@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { Token } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -31,9 +31,10 @@ for (const file of eventFiles) {
 	const event = require(filePath);
 	if (event.once) {
 
-		client.once(event.name, (...args) => event.execute(client,...args));
-	} else {
-		client.on(event.name, (...args) => event.execute(client,...args));
+		client.once(event.name, (...args) => event.execute(client, ...args));
+	}
+	else {
+		client.on(event.name, (...args) => event.execute(client, ...args));
 	}
 }
 client.login(Token);
