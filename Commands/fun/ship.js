@@ -1,6 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 const request = require('request');
 const fs = require('fs');
+const { open } = require('node:fs/promises');
+const {joinImages} = require('join-images');
 const sharp = require('sharp');
 const wait = require('node:timers/promises').setTimeout;
 const download = (url, path, callback) => {
@@ -10,7 +12,7 @@ const download = (url, path, callback) => {
 			.on('close', callback);
 	});
 };
-async function compositeImages(img1, img2, backImg, t) {
+async function compositeImages(img1, img2, backImg , dir, t) {
 	try {
 		await sharp(backImg)
 		.composite([
@@ -25,9 +27,9 @@ async function compositeImages(img1, img2, backImg, t) {
 				left: 256,
 			},
 		])
-		.toFile("./img-temp/out.jpg", () =>{
+		.toFile(`${dir}/out.jpg`, () =>{
 			const end = Date.now();
-			console.log(`Execution time: ${end - t} ms ./img-temp/out.jpg`);
+			console.log(`Execution time: ${end - t} ms ${dir}/out.jpg`);
 		})
 	} catch (error) {
 	  console.log(error);
@@ -43,7 +45,7 @@ module.exports = {
 		let start = null;
 		const user1 = interaction.options.getUser('target1');
 		const user2 = interaction.options.getUser('target2');
-		let urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'jpg', size: 256 })}`;
+		let urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'jpg', size: 128 })}`;
 		if(!fs.existsSync(`./img-temp/${interaction.guild.id}temp`))
 			fs.mkdirSync(`./img-temp/${interaction.guild.id}temp`)
 		let urlImgUser2 = null;
@@ -51,7 +53,7 @@ module.exports = {
 		let pathImgUser2 = null;
 		if(!user2){
 		}else{
-			urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'jpg', size: 256 })}`;
+			urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'jpg', size: 128 })}`;
 			pathImgUser2 = `./img-temp/${interaction.guild.id}temp/${user2.id}temp.jpg`
 		}
 		start = Date.now();
@@ -63,15 +65,22 @@ module.exports = {
 			});
 		}
 		start = Date.now();
-		if(!fs.existsSync(pathImgUser1)){
+		if(!fs.existsSync(pathImgUser2)){
 			await download (urlImgUser2, pathImgUser2, () =>{
 				console.log("✅ Done2");
 				const end = Date.now();
 				console.log(`Execution time: ${end - start} ms ${pathImgUser2}`);
 			});
 		}
-		await wait(500)
+		await wait(2000);
 		start = Date.now();
-		await compositeImages(pathImgUser1,pathImgUser2,'./img-temp/back-img.png',start);
+		joinImages([pathImgUser1, pathImgUser2]).then((img) => {
+			// Save image as file
+			img.toFile(`./img-temp/${interaction.guild.id}temp/out.jpg`);
+			const end = Date.now();
+			console.log(`Execution time: ${end - start} ms `);
+		});
+		await wait(500);
+		interaction.reply({files: [`./img-temp/${interaction.guild.id}temp/out.jpg`]})
 	},
 };
