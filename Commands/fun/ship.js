@@ -12,8 +12,31 @@ const download = (url, path, callback) => {
 			.on('close', callback);
 	});
 };
-async function compositeImages(img1, img2, backImg , dir, t) {
+async function compositeImages(img1, img2, backImg, dir, t, text) {
 	try {
+		const width = 256;
+		const height = 128; 
+		let i = null
+		if(text <= 20)
+			i = 0;
+		else if(text <= 40)
+			i = 1;
+		else if(text <= 60)
+			i = 2;
+		else if(text <= 80)
+			i = 3
+		else if(text <= 100)
+			i = 4
+		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"]
+		const svgImage = `
+			<svg width="${width}" height="${height}">
+				<style>
+				.title { fill: ${color[i]}; font-size: 50px; font-weight: normal;}
+				</style>
+				<text x="50%" y="60%" text-anchor="middle" class="title">${text}%</text>
+			</svg>	
+		`;
+		const svgBuffer = Buffer.from(svgImage);
 		await sharp(backImg)
 		.composite([
 			{
@@ -24,7 +47,12 @@ async function compositeImages(img1, img2, backImg , dir, t) {
 			{
 				input: img2,
 				top: 0,
-				left: 256,
+				left: 128,
+			},
+			{
+				input: svgBuffer,
+				top: 0,
+				left: 0,
 			},
 		])
 		.toFile(`${dir}/out.jpg`, () =>{
@@ -32,7 +60,7 @@ async function compositeImages(img1, img2, backImg , dir, t) {
 			console.log(`Execution time: ${end - t} ms ${dir}/out.jpg`);
 		})
 	} catch (error) {
-	  console.log(error);
+		console.log(error);
 	}
 }
 module.exports = {
@@ -74,12 +102,7 @@ module.exports = {
 		}
 		await wait(2000);
 		start = Date.now();
-		joinImages([pathImgUser1, pathImgUser2]).then((img) => {
-			// Save image as file
-			img.toFile(`./img-temp/${interaction.guild.id}temp/out.jpg`);
-			const end = Date.now();
-			console.log(`Execution time: ${end - start} ms `);
-		});
+		await compositeImages(pathImgUser1, pathImgUser2, './img-temp/back-img.png' , `./img-temp/${interaction.guild.id}temp`, start,10)
 		await wait(500);
 		interaction.reply({files: [`./img-temp/${interaction.guild.id}temp/out.jpg`]})
 	},
