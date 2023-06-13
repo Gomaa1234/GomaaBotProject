@@ -31,7 +31,7 @@ async function compositeImages(img1, img2, backImg, dir, t, text) {
 		const svgImage = `
 			<svg width="${width}" height="${height}">
 				<style>
-				.title { fill: ${color[i]}; font-size: 50px; font-weight: normal;}
+				.title { fill: ${color[i]}; font-size: 50px; font: arial; font-weight: normal;}
 				</style>
 				<text x="50%" y="60%" text-anchor="middle" class="title">${text}%</text>
 			</svg>	
