@@ -1,21 +1,21 @@
 const { SlashCommandBuilder } = require('discord.js');
-// const request = require('request');
-const axios = require('axios')
+const axios = require('axios');
 const fs = require('fs');
 const sharp = require('sharp');
 const wait = require('node:timers/promises').setTimeout;
+const { Position } = require('../../imagePosition.json');
 async function URLimg(url, time){
 	// Get image Buffer from url and convert to Base64
     const image = await axios.get(url, {responseType: 'arraybuffer'});
     const base64Image = Buffer.from(image.data).toString('base64');
     // Do stuff with result...
-    console.log(base64Image);
 	const end = Date.now();
 	console.log(`Execution time: ${end - time} ms`);
-	return base64Image
+	return base64Image;
 }
 async function compositeImages(img1, img2, backImg, dir, t, text) {
 	try {
+		Math.floor(Math.random() * 3)+1;
 		const width = 1024;
 		const height = 512; 
 		let i = null
@@ -29,34 +29,50 @@ async function compositeImages(img1, img2, backImg, dir, t, text) {
 			i = 3
 		else if(text <= 100)
 			i = 4
-		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"]
+		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"];
 		const svgImage = `
 			<svg width="${width}" height="${height}">
 				<style>
 				.title { 
-					fill: ${color[i]}; 
+					fill: ${color[i]};
 					font-size: 100px; 
-					font-family: Arial, sans-serif; 
+					font-family: Ar3al, sans-serif; 
 					font-weight: normal;
+					paint-order: stroke;
+					stroke: #000000;
+					stroke-width: 8px;
+					stroke-linecap: butt;
+					stroke-linejoin: miter;
 				}
 				</style>
 				<text x="50%" y="80%" text-anchor="middle" class="title">${text}%</text>
 			</svg>
 		`;
 		const svgBuffer = Buffer.from(svgImage);
-		const img1Buffer = Buffer.from(img1, 'base64');
-		const img2Buffer = Buffer.from(img2, 'base64');
+		let img1Buffer = Buffer.from(img1, 'base64');
+		let img2Buffer = Buffer.from(img2, 'base64');
+		img1Buffer = await sharp(img1Buffer)
+			.resize({ width: 160 })
+			.toBuffer()
+		img2Buffer = await sharp(img2Buffer)
+			.resize({ width: 160 })
+			.toBuffer()
 		await sharp(backImg)
 		.composite([
 			{
 				input: img1Buffer,
-				top: 0,
-				left: 0,
+				top: Position[0].y1,
+				left: Position[0].x1,
 			},
 			{
 				input: img2Buffer,
+				top: Position[0].y2,
+				left: Position[0].x2,
+			},
+			{
+				input: './img/img-temple/1.png',
 				top: 0,
-				left: 256,
+				left: 0,
 			},
 			{
 				input: svgBuffer,
@@ -85,8 +101,8 @@ module.exports = {
 		let urlImgUser1 = null;
 		let urlImgUser2 = null;
 		urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
-		if(!fs.existsSync(`./img-temp/${interaction.guild.id}temp`))
-			fs.mkdirSync(`./img-temp/${interaction.guild.id}temp`)
+		if(!fs.existsSync(`./img/${interaction.guild.id}temp`))
+			fs.mkdirSync(`./img/${interaction.guild.id}temp`)
 		if(!user2){
 		}else{
 			urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
@@ -99,11 +115,11 @@ module.exports = {
 		await compositeImages(
 			imgUrl1, 
 			imgUrl2, 
-			'./img-temp/back-img.png' , 
-			`./img-temp/${interaction.guild.id}temp`, 
+			'./img/back-img.png' , 
+			`./img/${interaction.guild.id}temp`, 
 			start, 
 			Math.floor(Math.random() * 101))
 		await wait(100);
-		interaction.reply({files: [`./img-temp/${interaction.guild.id}temp/out.png`]})
+		interaction.reply({files: [`./img/${interaction.guild.id}temp/out.png`]})
 	},
 };
