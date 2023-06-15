@@ -13,30 +13,32 @@ async function URLimg(url, time){
 	console.log(`Execution time: ${end - time} ms`);
 	return base64Image;
 }
-async function compositeImages(img1, img2, backImg, dir, t, text) {
+function getColorId(colorArray, num){
+	let valPercentage = 100/colorArray.length;
+	let valConst = 0;
+	for(i = 0; i<colorArray.length; i++){
+		if(num > valConst+valPercentage){
+			valConst += valPercentage;
+		}
+		else{
+			return i
+		}
+	} 
+}
+async function compositeImages(img1, img2, backImg, dir, t, num) {
 	try {
-		Math.floor(Math.random() * 3)+1;
+		const randomInt = Math.floor(Math.random() * 3);
 		const width = 1024;
-		const height = 512; 
-		let i = null
-		if(text <= 20)
-			i = 0;
-		else if(text <= 40)
-			i = 1;
-		else if(text <= 60)
-			i = 2;
-		else if(text <= 80)
-			i = 3
-		else if(text <= 100)
-			i = 4
+		const height = 512;
 		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"];
+		const i = getColorId(color,num)
 		const svgImage = `
 			<svg width="${width}" height="${height}">
 				<style>
 				.title { 
 					fill: ${color[i]};
 					font-size: 100px; 
-					font-family: Ar3al, sans-serif; 
+					font-family: Arial, sans-serif; 
 					font-weight: normal;
 					paint-order: stroke;
 					stroke: #000000;
@@ -45,32 +47,32 @@ async function compositeImages(img1, img2, backImg, dir, t, text) {
 					stroke-linejoin: miter;
 				}
 				</style>
-				<text x="50%" y="80%" text-anchor="middle" class="title">${text}%</text>
+				<text x="50%" y="80%" text-anchor="middle" class="title">${num}%</text>
 			</svg>
 		`;
 		const svgBuffer = Buffer.from(svgImage);
 		let img1Buffer = Buffer.from(img1, 'base64');
 		let img2Buffer = Buffer.from(img2, 'base64');
 		img1Buffer = await sharp(img1Buffer)
-			.resize({ width: 160 })
+			.resize({ width: Position[randomInt].width })
 			.toBuffer()
 		img2Buffer = await sharp(img2Buffer)
-			.resize({ width: 160 })
+			.resize({ width: Position[randomInt].width })
 			.toBuffer()
 		await sharp(backImg)
 		.composite([
 			{
 				input: img1Buffer,
-				top: Position[0].y1,
-				left: Position[0].x1,
+				top: Position[randomInt].y1,
+				left: Position[randomInt].x1,
 			},
 			{
 				input: img2Buffer,
-				top: Position[0].y2,
-				left: Position[0].x2,
+				top: Position[randomInt].y2,
+				left: Position[randomInt].x2,
 			},
 			{
-				input: './img/img-temple/1.png',
+				input: `./img/img-temple/${randomInt+1}.png`,
 				top: 0,
 				left: 0,
 			},
