@@ -130,5 +130,5 @@ dist
 .pnp.*
 
 config.json
-imagePosition.json
+imagePos.json
 /img/
