@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 const sharp = require('sharp');
 const wait = require('node:timers/promises').setTimeout;
-const { Position } = require('../../imagePosition.json');
+const { Position } = require('../../imagePos.json');
 async function URLimg(url, time){
 	// Get image Buffer from url and convert to Base64
     const image = await axios.get(url, {responseType: 'arraybuffer'});
