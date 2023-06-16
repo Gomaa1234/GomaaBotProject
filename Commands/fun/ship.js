@@ -5,33 +5,43 @@ const sharp = require('sharp');
 const wait = require('node:timers/promises').setTimeout;
 const { Position } = require('../../imagePos.json');
 async function URLimg(url, time){
-	// Get image Buffer from url and convert to Base64
+	// get image Buffer from url and convert to Base64
     const image = await axios.get(url, {responseType: 'arraybuffer'});
     const base64Image = Buffer.from(image.data).toString('base64');
-    // Do stuff with result...
+    // console log the time that take to finish
 	const end = Date.now();
 	console.log(`Execution time: ${end - time} ms`);
+	// return base64 image
 	return base64Image;
 }
+// this function return the index to a array  of color
 function getColorId(colorArray, num){
+	// this gets the percentage of array length divided by 100
 	let valPercentage = 100/colorArray.length;
+	// this variable serves do add percentage gradually.
 	let valConst = 0;
 	for(i = 0; i<colorArray.length; i++){
+		// see is num is bigger than valConst plus valPercentage
 		if(num > valConst+valPercentage){
+			// adds valPercentage to valConst
 			valConst += valPercentage;
 		}
 		else{
+			// return index when false
 			return i
 		}
 	} 
 }
 async function compositeImages(img1, img2, backImg, dir, t, num) {
 	try {
+		// random number 0 to number of images template.
 		const randomInt = Math.floor(Math.random() * 5);
 		const width = 1024;
 		const height = 512;
 		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"];
+		// gets color depending of the variable num.
 		const i = getColorId(color,num)
+		// this create a svg image with text on it with color and variable num.
 		const svgImage = `
 			<svg width="${width}" height="${height}">
 				<style>
@@ -47,18 +57,21 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 					stroke-linejoin: miter;
 				}
 				</style>
-				<text x="50%" y="80%" text-anchor="middle" class="title">${num}%</text>
+				<text x="50%" y="95%" text-anchor="middle" class="title">${num}%</text>
 			</svg>
 		`;
+		// this create a buffer to from the svgImage, img1Buffer and img2Buffer.
 		const svgBuffer = Buffer.from(svgImage);
 		let img1Buffer = Buffer.from(img1, 'base64');
 		let img2Buffer = Buffer.from(img2, 'base64');
+		// this adjust the image size to the Position[index].width.
 		img1Buffer = await sharp(img1Buffer)
 			.resize({ width: Position[randomInt].width })
 			.toBuffer()
 		img2Buffer = await sharp(img2Buffer)
 			.resize({ width: Position[randomInt].width })
 			.toBuffer()
+		// this composite all images in the next order 1st img1Buffer, 2nd img2Buffer, 3rd image template and 4th svgBuffer .
 		await sharp(backImg)
 		.composite([
 			{
@@ -82,6 +95,7 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 				left: 0,
 			},
 		])
+		// this makes a image created to file.
 		.toFile(`${dir}/out.png`, () =>{
 			const end = Date.now();
 			console.log(`Execution time: ${end - t} ms ${dir}/out.png`);
@@ -92,36 +106,50 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 }
 module.exports = {
 	data: new SlashCommandBuilder()
+	// info about the command like Name, Description, User Options, etc.
 		.setName('ship')
 		.setDescription('This command show the percentage of the ship of two peaple.')
 		.addUserOption(option1 => option1.setName('target1').setDescription('The user\'s avatar to show').setRequired(true))
 		.addUserOption(option2 => option2.setName('target2').setDescription('The user\'s avatar to show')),
 	async execute(interaction) {
+		// execute the code of the command.
+		// this is a variable to set a start time to the function to then see who many ms a function takes to finish.
 		let start = null;
+		// grabs all the options in the interaction.
 		const user1 = interaction.options.getUser('target1');
 		const user2 = interaction.options.getUser('target2');
+		// this variable are to save the targets profile pics
 		let urlImgUser1 = null;
 		let urlImgUser2 = null;
+		// this grabs the urls of the users profile pics
 		urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
+		urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
+		// see is folder exist if not create folder with the server id + temp
 		if(!fs.existsSync(`./img/${interaction.guild.id}temp`))
 			fs.mkdirSync(`./img/${interaction.guild.id}temp`)
-		if(!user2){
-		}else{
-			urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
-		}
+		// start the timer for this function
 		start = Date.now();
+		// this grabs the return of the function.
 		const imgUrl1 = await URLimg(urlImgUser1, start)
 		start = Date.now();
 		const imgUrl2 = await URLimg(urlImgUser2, start)
 		start = Date.now();
+		// this calls the compositeImage function
 		await compositeImages(
-			imgUrl1, 
-			imgUrl2, 
-			'./img/back-img.png' , 
-			`./img/${interaction.guild.id}temp`, 
-			start, 
+			imgUrl1,
+			// img1
+			imgUrl2,
+			// img2
+			'./img/back-img.png',
+			// background image. 
+			`./img/${interaction.guild.id}temp`,
+			// folder path
+			start,
+			// timer
 			Math.floor(Math.random() * 101))
+			// random number 0 to 100
 		await wait(100);
+		// reply to the interaction with the generated file.
 		interaction.reply({files: [`./img/${interaction.guild.id}temp/out.png`]})
 	},
 };
