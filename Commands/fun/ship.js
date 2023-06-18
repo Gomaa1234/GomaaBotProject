@@ -1,8 +1,14 @@
+// import Slash Command Builder from discord.js
 const { SlashCommandBuilder } = require('discord.js');
+// axios is use to create a base64 based on a url
 const axios = require('axios');
+// use to use file system on node js
 const fs = require('fs');
+// create the final image.
 const sharp = require('sharp');
+// create a timer and make a code wait using milliseconds
 const wait = require('node:timers/promises').setTimeout;
+// access a json array in a json file
 const { Position } = require('../../imagePos.json');
 async function URLimg(url, time){
 	// get image Buffer from url and convert to Base64
