@@ -73,34 +73,34 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 			.resize({ width: Position[randomInt].width })
 			.toBuffer()
 		// this composite all images in the next order 1st img1Buffer, 2nd img2Buffer, 3rd image template and 4th svgBuffer .
-		await sharp(backImg)
-		.composite([
-			{
-				input: img1Buffer,
-				top: Position[randomInt].y1,
-				left: Position[randomInt].x1,
-			},
-			{
-				input: img2Buffer,
-				top: Position[randomInt].y2,
-				left: Position[randomInt].x2,
-			},
-			{
-				input: `./img/img-temple/${randomInt+1}.png`,
-				top: 0,
-				left: 0,
-			},
-			{
-				input: svgBuffer,
-				top: 0,
-				left: 0,
-			},
-		])
-		// this makes a image created to file.
-		.toFile(`${dir}/out.png`, () =>{
-			const end = Date.now();
-			console.log(`Execution time: ${end - t} ms ${dir}/out.png`);
-		})
+		sharp(backImg)
+			.composite([
+				{
+					input: img1Buffer,
+					top: Position[randomInt].y1,
+					left: Position[randomInt].x1,
+				},
+				{
+					input: img2Buffer,
+					top: Position[randomInt].y2,
+					left: Position[randomInt].x2,
+				},
+				{
+					input: `./img/img-temple/ship/${randomInt + 1}.png`,
+					top: 0,
+					left: 0,
+				},
+				{
+					input: svgBuffer,
+					top: 0,
+					left: 0,
+				},
+			])
+			// this makes a image created to file.
+			.toFile(`${dir}/out.png`, () => {
+				const end = Date.now();
+				console.log(`Execution time: ${end - t} ms ${dir}/out.png`);
+			})
 	} catch (error) {
 		console.log(error);
 	}
@@ -119,12 +119,9 @@ module.exports = {
 		// grabs all the options in the interaction.
 		const user1 = interaction.options.getUser('1st-user');
 		const user2 = interaction.options.getUser('2nd-user');
-		// this variable are to save the targets profile pics
-		let urlImgUser1 = null;
-		let urlImgUser2 = null;
 		// this grabs the urls of the users profile pics
-		urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
-		urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
+		const urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
+		const urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
 		// see is folder exist if not create folder with the server id + temp
 		if(!fs.existsSync(`./img/${interaction.guild.id}temp`))
 			fs.mkdirSync(`./img/${interaction.guild.id}temp`)

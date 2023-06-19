@@ -86,7 +86,7 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 				left: Position[randomInt].x2,
 			},
 			{
-				input: `./img/img-temple/${randomInt+1}.png`,
+				input: `./img/img-temple/bro/${randomInt+1}.png`,
 				top: 0,
 				left: 0,
 			},
@@ -117,14 +117,11 @@ module.exports = {
 		// this is a variable to set a start time to the function to then see who many ms a function takes to finish.
 		let start = null;
 		// grabs all the options in the interaction.
-		const user1 = interaction.options.getUser('Bro-1st');
-		const user2 = interaction.options.getUser('Bro-2nd');
+		const user1 = interaction.options.getUser('1st-bro');
+		const user2 = interaction.options.getUser('2nd-bro');
 		// this variable are to save the targets profile pics
 		let urlImgUser1 = null;
 		let urlImgUser2 = null;
-		// this grabs the urls of the users profile pics
-		urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
-		urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
 		// see is folder exist if not create folder with the server id + temp
 		if(!fs.existsSync(`./img/${interaction.guild.id}temp`))
 			fs.mkdirSync(`./img/${interaction.guild.id}temp`)
