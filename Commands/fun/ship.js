@@ -41,7 +41,7 @@ function getColorId(colorArray, num){
 async function compositeImages(img1, img2, backImg, dir, t, num) {
 	try {
 		// random number 0 to number of images template.
-		const randomInt = Math.floor(Math.random() * 5);
+		const randomInt = Math.floor(Math.random() * 6);
 		const width = 1024;
 		const height = 512;
 		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"];
