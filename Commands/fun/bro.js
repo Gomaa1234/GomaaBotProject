@@ -108,17 +108,17 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 module.exports = {
 	data: new SlashCommandBuilder()
 	// info about the command like Name, Description, User Options, etc.
-		.setName('ship')
-		.setDescription('This command show the percentage of the ship of two peaple.')
-		.addUserOption(option1 => option1.setName('1st-user').setDescription('user number 1').setRequired(true))
-		.addUserOption(option2 => option2.setName('2nd-user').setDescription('user number 2').setRequired(true)),
+		.setName('bro')
+		.setDescription('This command show the percentage of the brothers of two peaple.')
+		.addUserOption(option1 => option1.setName('1st-bro').setDescription('Bro number 1').setRequired(true))
+		.addUserOption(option2 => option2.setName('2nd-bro').setDescription('Bro number 2').setRequired(true)),
 		// execute the code of the command.
 	async execute(interaction) {
 		// this is a variable to set a start time to the function to then see who many ms a function takes to finish.
 		let start = null;
 		// grabs all the options in the interaction.
-		const user1 = interaction.options.getUser('1st-user');
-		const user2 = interaction.options.getUser('2nd-user');
+		const user1 = interaction.options.getUser('Bro-1st');
+		const user2 = interaction.options.getUser('Bro-2nd');
 		// this variable are to save the targets profile pics
 		let urlImgUser1 = null;
 		let urlImgUser2 = null;
