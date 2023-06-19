@@ -35,8 +35,13 @@ function getColorId(colorArray, num){
 }
 async function compositeImages(img1, img2, backImg, dir, t, num) {
 	try {
-		// random number 0 to number of images template.
-		const randomInt = Math.floor(Math.random() * 6);
+		// random number 0 to number of images template.\
+		const path = `./img/img-temple/ship/`
+		let randomInt = null
+		fs.readdir(path, (err, files) => {
+			randomInt = Math.floor(Math.random() * files.length);
+		});
+		await wait(10)
 		const width = 1024;
 		const height = 512;
 		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"];
