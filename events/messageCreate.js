@@ -5,7 +5,7 @@ module.exports = {
         let msg = message.content;
         msg = msg.toLowerCase();
         for(i = 0; i < badWord['word-bad'].length; i++){
-            if(msg.search(badWord['word-bad'][i])){
+            if(msg.search(badWord['word-bad'][i]) != -1){
                 console.log('no');
                 message.delete()
                     .then(msg => console.log(`Deleted message from ${msg.author.username}`))
