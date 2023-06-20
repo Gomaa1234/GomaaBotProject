@@ -128,8 +128,8 @@ module.exports = {
 		const urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
 		const urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
 		// see is folder exist if not create folder with the server id + temp
-		if(!fs.existsSync(`./img/${interaction.guild.id}temp`))
-			fs.mkdirSync(`./img/${interaction.guild.id}temp`)
+		if(!fs.existsSync(`./img/serversImg/${interaction.guild.id}temp`))
+			fs.mkdirSync(`./img/serversImg/${interaction.guild.id}temp`)
 		// start the timer for this function
 		start = Date.now();
 		// this grabs the return of the function.
@@ -142,7 +142,7 @@ module.exports = {
 			imgUrl1,
 			imgUrl2,
 			'./img/back-img.png',
-			`./img/${interaction.guild.id}temp`,
+			`./img/serversImg/${interaction.guild.id}temp`,
 			start,
 			Math.floor(Math.random() * 101))
 		await wait(100);
