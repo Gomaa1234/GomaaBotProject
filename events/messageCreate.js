@@ -1,4 +1,6 @@
-const badWord = require('../bad-words.json')
+const badWord = require('../bad-words.json');
+const JSONPath = './Servers/';
+const fs = require('fs');
 module.exports = {
 	name: 'messageCreate',
 	async execute(client,message) {
@@ -8,7 +10,17 @@ module.exports = {
             if(msg.search(badWord['word-bad'][i]) != -1){
                 console.log('no');
                 message.delete()
-                    .then(msg => console.log(`Deleted message from ${msg.author.username}`))
+                    .then(msg => {
+                        console.log(`Deleted message from ${msg.author.username}`);
+                        fs.readFile(`${JSONPath+message.guildId}.json`, async (err, fileData) => {
+                            if (err) throw err;
+                            let file = JSON.parse(fileData);
+                            client.channels.fetch(file.modChannel)
+                            .then(channel => {
+                                channel.send(`**Message send by <@${msg.author.id}> was deleted by This Bot in ${message.channel}**`);
+                            })
+                        })
+                    })
                     .catch(console.error);
                 return;
             }

@@ -44,7 +44,7 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 		await wait(10)
 		const width = 1024;
 		const height = 512;
-		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"];
+		const color = ["#FF0D0D", "#FF4E11", "#FF8E15", "#FAB733", "#ACB334", "#69B34C","#33CC33"];
 		// gets color depending of the variable num.
 		const i = getColorId(color,num)
 		// this create a svg image with text on it with color and variable num.
@@ -147,6 +147,6 @@ module.exports = {
 			Math.floor(Math.random() * 101))
 		await wait(100);
 		// reply to the interaction with the generated file.
-		interaction.reply({files: [`./img/${interaction.guild.id}temp/out.png`]})
+		interaction.reply({files: [`./img/serversImg/${interaction.guild.id}temp/out.png`]})
 	},
 };

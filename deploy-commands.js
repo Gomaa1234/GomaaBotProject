@@ -1,5 +1,6 @@
 const { REST, Routes } = require('discord.js');
-const { ClientId, Token, Guilds } = require('./config.json');
+const { ClientId, Token } = require('./config.json');
+const JSONPath = './Servers/';
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -30,14 +31,20 @@ const rest = new REST().setToken(Token);
     try {
         console.log(`Started refreshing ${commands.length} application (/) commands.`)
         // The put method is used to fully refresh all commands in the guild with the current set
-		for(let i = 0;i < Guilds.length; i++){
-        	const data = await rest.put(
-                // apply commands to all servers
-        	    Routes.applicationGuildCommands(ClientId, Guilds[i].guildId),
-        	    { body: commands },
-        	);
-            console.log(`Successfully reloaded ${data.length} application (/) commands in ${Guilds[i]}.`);
-		}
+        fs.readdir(JSONPath, (err, files) => {
+            for(let i = 0;i < files.length; i++){
+                fs.readFile(JSONPath+files[i], async (err, fileData) => {
+                    if (err) throw err;
+                    let file = JSON.parse(fileData);
+                    const data = await rest.put(
+                        // apply commands to all servers
+                        Routes.applicationGuildCommands(ClientId, file.guildId),
+                        { body: commands },
+                    );
+                    console.log(`Successfully reloaded ${data.length} application (/) commands in ${file.guildId}.`);
+                });
+            }
+        })
     }
     catch (error) {
         // And of course, make sure you catch and log any errors!

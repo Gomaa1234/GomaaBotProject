@@ -1,6 +1,6 @@
 const { REST, Routes } = require('discord.js');
 const { ClientId, Token } = require('../config.json');
-const fs = require('node:fs');
+const fs = require('fs');
 const path = require('node:path');
 // when the bot is connected to a server the bot adds all commands to the server.
 module.exports = {
@@ -42,25 +42,27 @@ module.exports = {
                     { body: commands },
                 );
                 console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-                const addition = {
-                    guildId: `${guild.id}`,
-                }
-                fs.readFile("./config.json", "utf8", function readFileCallback(err, data) {
+                // json data
+                const jsonData = `{
+                    "guildId": "${guild.id}",
+                    "modChannel": "add later"
+                }`;
+                // parse json
+                var jsonObj = JSON.parse(jsonData);
+                console.log(jsonObj);
+                
+                // stringify JSON Object
+                var jsonContent = JSON.stringify(jsonObj);
+                console.log(jsonContent);
+                
+                fs.writeFile(`./Servers/${guild.id}.json`, jsonContent, 'utf8', function (err) {
                     if (err) {
-                      console.log(err);
-                    } else {
-                      var obj = JSON.parse(data); //now converting it to an object
-                      obj.Guilds.push(addition); //adding the data
-                      var json = JSON.stringify(obj, null, 2); //converting it back to json
-                      fs.writeFile("./config.json", json, "utf8", (err) => {
-                        if (err) {
-                          console.log(err);
-                        } else {
-                          console.log("Done");
-                        }
-                      });
+                        console.log("An error occured while writing JSON Object to File.");
+                        return console.log(err);
                     }
-                  });
+                
+                    console.log("JSON file has been saved.");
+                });
             }
             catch (error) {
                 // And of course, make sure you catch and log any errors!
