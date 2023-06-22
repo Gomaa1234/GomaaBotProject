@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 const sharp = require('sharp');
 const wait = require('node:timers/promises').setTimeout;
-const { Position } = require('../../imagePos.json');
+const { PositionShip } = require('../../imagePos.json');
 // this converts url to a base 64
 async function URLimg(url, time){
 	// get image Buffer from url and convert to Base64
@@ -70,25 +70,25 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 		const svgBuffer = Buffer.from(svgImage);
 		let img1Buffer = Buffer.from(img1, 'base64');
 		let img2Buffer = Buffer.from(img2, 'base64');
-		// this adjust the image size to the Position[index].width.
+		// this adjust the image size to the PositionShip[index].width.
 		img1Buffer = await sharp(img1Buffer)
-			.resize({ width: Position[randomInt].width })
+			.resize({ width: PositionShip[randomInt].width })
 			.toBuffer()
 		img2Buffer = await sharp(img2Buffer)
-			.resize({ width: Position[randomInt].width })
+			.resize({ width: PositionShip[randomInt].width })
 			.toBuffer()
 		// this composite all images in the next order 1st img1Buffer, 2nd img2Buffer, 3rd image template and 4th svgBuffer .
 		sharp(backImg)
 			.composite([
 				{
 					input: img1Buffer,
-					top: Position[randomInt].y1,
-					left: Position[randomInt].x1,
+					top: PositionShip[randomInt].y1,
+					left: PositionShip[randomInt].x1,
 				},
 				{
 					input: img2Buffer,
-					top: Position[randomInt].y2,
-					left: Position[randomInt].x2,
+					top: PositionShip[randomInt].y2,
+					left: PositionShip[randomInt].x2,
 				},
 				{
 					input: `./img/img-temple/ship/${randomInt + 1}.png`,

@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 const sharp = require('sharp');
 const wait = require('node:timers/promises').setTimeout;
-const { Position } = require('../../imagePos.json');
+const { PositionBro } = require('../../imagePos.json');
 // this converts url to a base 64
 async function URLimg(url, time){
 	// get image Buffer from url and convert to Base64
@@ -36,7 +36,12 @@ function getColorId(colorArray, num){
 async function compositeImages(img1, img2, backImg, dir, t, num) {
 	try {
 		// random number 0 to number of images template.
-		const randomInt = Math.floor(Math.random() * 6);
+		const path = `./img/img-temple/bro/`
+		let randomInt = null
+		fs.readdir(path, (err, files) => {
+			randomInt = Math.floor(Math.random() * files.length);
+		});
+		await wait(10)
 		const width = 1024;
 		const height = 512;
 		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"];
@@ -65,25 +70,25 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 		const svgBuffer = Buffer.from(svgImage);
 		let img1Buffer = Buffer.from(img1, 'base64');
 		let img2Buffer = Buffer.from(img2, 'base64');
-		// this adjust the image size to the Position[index].width.
+		// this adjust the image size to the PositionBro[index].width.
 		img1Buffer = await sharp(img1Buffer)
-			.resize({ width: Position[randomInt].width })
+			.resize({ width: PositionBro[randomInt].width })
 			.toBuffer()
 		img2Buffer = await sharp(img2Buffer)
-			.resize({ width: Position[randomInt].width })
+			.resize({ width: PositionBro[randomInt].width })
 			.toBuffer()
 		// this composite all images in the next order 1st img1Buffer, 2nd img2Buffer, 3rd image template and 4th svgBuffer .
 		await sharp(backImg)
 		.composite([
 			{
 				input: img1Buffer,
-				top: Position[randomInt].y1,
-				left: Position[randomInt].x1,
+				top: PositionBro[randomInt].y1,
+				left: PositionBro[randomInt].x1,
 			},
 			{
 				input: img2Buffer,
-				top: Position[randomInt].y2,
-				left: Position[randomInt].x2,
+				top: PositionBro[randomInt].y2,
+				left: PositionBro[randomInt].x2,
 			},
 			{
 				input: `./img/img-temple/bro/${randomInt+1}.png`,
@@ -119,12 +124,12 @@ module.exports = {
 		// grabs all the options in the interaction.
 		const user1 = interaction.options.getUser('1st-bro');
 		const user2 = interaction.options.getUser('2nd-bro');
-		// this variable are to save the targets profile pics
-		let urlImgUser1 = null;
-		let urlImgUser2 = null;
+		// this grabs the urls of the users profile pics
+		const urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
+		const urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
 		// see is folder exist if not create folder with the server id + temp
-		if(!fs.existsSync(`./img/${interaction.guild.id}temp`))
-			fs.mkdirSync(`./img/${interaction.guild.id}temp`)
+		if(!fs.existsSync(`./img/serversImg/${interaction.guild.id}temp`))
+			fs.mkdirSync(`./img/serversImg/${interaction.guild.id}temp`)
 		// start the timer for this function
 		start = Date.now();
 		// this grabs the return of the function.
@@ -137,11 +142,11 @@ module.exports = {
 			imgUrl1,
 			imgUrl2,
 			'./img/back-img.png',
-			`./img/${interaction.guild.id}temp`,
+			`./img/serversImg/${interaction.guild.id}temp`,
 			start,
 			Math.floor(Math.random() * 101))
 		await wait(100);
 		// reply to the interaction with the generated file.
-		interaction.reply({files: [`./img/${interaction.guild.id}temp/out.png`]})
+		interaction.reply({files: [`./img/serversImg/${interaction.guild.id}temp/out.png`]})
 	},
 };
