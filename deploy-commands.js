@@ -31,13 +31,17 @@ const rest = new REST().setToken(Token);
     try {
         console.log(`Started refreshing ${commands.length} application (/) commands.`)
         // The put method is used to fully refresh all commands in the guild with the current set
+        // Read directory 
         fs.readdir(JSONPath, (err, files) => {
+            // Go to all files in directory
             for(let i = 0;i < files.length; i++){
+                // Read specific file
                 fs.readFile(JSONPath+files[i], async (err, fileData) => {
                     if (err) throw err;
+                    // Put a file info in variable
                     let file = JSON.parse(fileData);
                     const data = await rest.put(
-                        // apply commands to all servers
+                        // apply commands to servers
                         Routes.applicationGuildCommands(ClientId, file.guildId),
                         { body: commands },
                     );
