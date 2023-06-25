@@ -6,6 +6,6 @@ module.exports = {
 		.setName('funquotes')
 		.setDescription('Sends a fun quote tu the user'),
 	async execute(interaction) {
-		await interaction.Reply('Test Quote: Never gonna give you up');
+		await interaction.reply('Test Quote: Never gonna give you up');
 	},
 };
