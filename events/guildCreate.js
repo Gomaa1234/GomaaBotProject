@@ -45,7 +45,12 @@ module.exports = {
                 // json data
                 const jsonData = `{
                     "guildId": "${guild.id}",
-                    "modChannel": "add later"
+                    "modChannel": "add later",
+                    "FunQuotes": [
+                        "Never gonna give you up",
+                        "Never gonna let you down",
+                        "01000101 00110110 00110010 00110001"
+                    ]
                 }`;
                 // parse json
                 var jsonObj = JSON.parse(jsonData);
