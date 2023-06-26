@@ -145,7 +145,7 @@ module.exports = {
 			`./img/serversImg/${interaction.guild.id}temp`,
 			start,
 			Math.floor(Math.random() * 101))
-		await wait(100);
+		await wait(200);
 		// reply to the interaction with the generated file.
 		interaction.reply({files: [`./img/serversImg/${interaction.guild.id}temp/out.png`]})
 	},
