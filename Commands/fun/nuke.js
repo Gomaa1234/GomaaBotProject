@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
+const message = require('../../EmbedMessages/Message.js')
+const error = require('../../EmbedMessages/Error.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()

@@ -1,9 +1,11 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const axios = require('axios');
 const fs = require('fs');
 const sharp = require('sharp');
 const wait = require('node:timers/promises').setTimeout;
 const { PositionBro } = require('../../imagePos.json');
+const message = require('../../EmbedMessages/Message.js')
+const error = require('../../EmbedMessages/Error.js')
 // this converts url to a base 64
 async function URLimg(url, time){
 	// get image Buffer from url and convert to Base64
@@ -147,6 +149,13 @@ module.exports = {
 			Math.floor(Math.random() * 101))
 		await wait(200);
 		// reply to the interaction with the generated file.
-		interaction.reply({files: [`./img/serversImg/${interaction.guild.id}temp/out.png`]})
+		const fileImage = new AttachmentBuilder(`./img/serversImg/${interaction.guild.id}temp/out.png`);
+		const exampleEmbed = new EmbedBuilder()
+            .setColor(0x0099FF)
+            .setTitle(interaction.commandName)
+            .setDescription(`${user1}💪${user2}`)
+        	.setImage('attachment://out.png')
+            .setFooter({ text: `${interaction.member.displayName}`});
+        interaction.reply({ embeds: [exampleEmbed], files: [fileImage]});
 	},
 };

@@ -1,6 +1,8 @@
 const badWord = require('../bad-words.json');
 const JSONPath = './Servers/';
 const fs = require('fs');
+const message = require('../EmbedMessages/Message.js')
+const error = require('../EmbedMessages/Error.js')
 module.exports = {
 	name: 'messageCreate',
 	async execute(client,message) {

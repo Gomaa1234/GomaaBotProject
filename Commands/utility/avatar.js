@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-
+const message = require('../../EmbedMessages/Message.js')
+const error = require('../../EmbedMessages/Error.js')
 module.exports = {
 	data: new SlashCommandBuilder()
 		// info about the command like Name, Description, User Options, etc.
@@ -11,6 +12,6 @@ module.exports = {
 		const user = interaction.options.getUser('target');
 		// reply with the users avatar
 		if (user) return interaction.reply(`${user.username}'s avatar: ${user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 })}`);
-		return interaction.reply(`Your avatar: ${interaction.user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 })}`);
+		return message.execute(interaction,`Your avatar: ${interaction.user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 })}`);
 	},
 };

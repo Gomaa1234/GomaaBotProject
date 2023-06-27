@@ -1,4 +1,6 @@
 // Create interaction
+const message = require('../EmbedMessages/Message.js')
+const error = require('../EmbedMessages/Error.js')
 module.exports = {
 	name: 'interactionCreate',
 	async execute(client, interaction) {

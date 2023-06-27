@@ -1,5 +1,7 @@
 const { REST, Routes } = require('discord.js');
 const { ClientId, Token } = require('../config.json');
+const message = require('../EmbedMessages/Message.js')
+const error = require('../EmbedMessages/Error.js')
 const fs = require('fs');
 const path = require('node:path');
 // when the bot is connected to a server the bot adds all commands to the server.

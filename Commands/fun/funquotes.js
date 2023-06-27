@@ -1,6 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 const JSONPath = './Servers/';
 const fs = require('fs');
+const message = require('../../EmbedMessages/Message.js')
+const error = require('../../EmbedMessages/Error.js')
 module.exports = {
 	data: new SlashCommandBuilder()
 	// info about the command like Name, Description, etc.
@@ -10,7 +12,7 @@ module.exports = {
 		fs.readFile(`${JSONPath+interaction.guildId}.json`, async (err, fileData) => {
 			let file = JSON.parse(fileData);
 			randomInt = Math.floor(Math.random() * file.FunQuotes.length);
-			return interaction.reply(file.FunQuotes[randomInt])
+			return message.execute(interaction,file.FunQuotes[randomInt])
 		})
 	},
 };
