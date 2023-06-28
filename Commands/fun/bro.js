@@ -10,9 +10,6 @@ async function URLimg(url, time){
 	// get image Buffer from url and convert to Base64
     const image = await axios.get(url, {responseType: 'arraybuffer'});
     const base64Image = Buffer.from(image.data).toString('base64');
-    // console log the time that take to finish
-	const end = Date.now();
-	console.log(`Execution time: ${end - time} ms`);
 	// return base64 image
 	return base64Image;
 }
@@ -34,7 +31,7 @@ function getColorId(colorArray, num){
 		}
 	} 
 }
-async function compositeImages(img1, img2, backImg, dir, t, num) {
+async function compositeImages(img1, img2, backImg, dir, t, num, interaction,user1, user2) {
 	try {
 		// random number 0 to number of images template.
 		const path = `./img/img-temple/bro/`
@@ -45,7 +42,7 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 		await wait(10)
 		const width = 1024;
 		const height = 512;
-		const color = ["#ff3300", "#ff9900", "#ffff00", "#66ff33", "#33cc33"];
+		const color = ["#FF0D0D", "#FF4E11", "#FF8E15", "#FAB733", "#ACB334", "#69B34C","#33CC33"];
 		// gets color depending of the variable num.
 		const i = getColorId(color,num)
 		// this create a svg image with text on it with color and variable num.
@@ -79,34 +76,48 @@ async function compositeImages(img1, img2, backImg, dir, t, num) {
 			.resize({ width: PositionBro[randomInt].width })
 			.toBuffer()
 		// this composite all images in the next order 1st img1Buffer, 2nd img2Buffer, 3rd image template and 4th svgBuffer .
-		await sharp(backImg)
-		.composite([
-			{
-				input: img1Buffer,
-				top: PositionBro[randomInt].y1,
-				left: PositionBro[randomInt].x1,
-			},
-			{
-				input: img2Buffer,
-				top: PositionBro[randomInt].y2,
-				left: PositionBro[randomInt].x2,
-			},
-			{
-				input: `./img/img-temple/bro/${randomInt+1}.png`,
-				top: 0,
-				left: 0,
-			},
-			{
-				input: svgBuffer,
-				top: 0,
-				left: 0,
-			},
-		])
-		// this makes a image created to file.
-		.toFile(`${dir}/out.png`, () =>{
-			const end = Date.now();
-			console.log(`Execution time: ${end - t} ms ${dir}/out.png`);
-		})
+		sharp(backImg)
+			.composite([
+				{
+					input: img1Buffer,
+					top: PositionBro[randomInt].y1,
+					left: PositionBro[randomInt].x1,
+				},
+				{
+					input: img2Buffer,
+					top: PositionBro[randomInt].y2,
+					left: PositionBro[randomInt].x2,
+				},
+				{
+					input: `./img/img-temple/ship/${randomInt + 1}.png`,
+					top: 0,
+					left: 0,
+				},
+				{
+					input: svgBuffer,
+					top: 0,
+					left: 0,
+				},
+			])
+			// this makes a image created to file.
+			.toFile(`${dir}/out.png`, () => {
+				const end = Date.now();
+				
+				try{
+					const fileImage = new AttachmentBuilder(`${dir}/out.png`);
+					const exampleEmbed = new EmbedBuilder()
+						.setColor(0x0099FF)
+						.setTitle(interaction.commandName)
+						.setDescription(`${user1}❤️${user2}`)
+						.setImage('attachment://out.png')
+						.setFooter({ text: `${interaction.member.displayName}`});
+					interaction.reply({ embeds: [exampleEmbed], files: [fileImage]});
+					console.log(`Execution time: ${end - t} ms`);
+				}catch(err){
+					console.log(err)
+					error.execute(interaction,`The bot couldn't render the image successfully pls try again`);
+				}
+			})
 	} catch (error) {
 		console.log(error);
 	}
@@ -121,7 +132,7 @@ module.exports = {
 		// execute the code of the command.
 	async execute(interaction) {
 		// this is a variable to set a start time to the function to then see who many ms a function takes to finish.
-		let start = null;
+		const timer = Date.now();
 		// grabs all the options in the interaction.
 		const user1 = interaction.options.getUser('1st-bro');
 		const user2 = interaction.options.getUser('2nd-bro');
@@ -132,34 +143,20 @@ module.exports = {
 		// see is folder exist if not create folder with the server id + temp
 		if(!fs.existsSync(`./img/serversImg/${interaction.guild.id}temp`))
 			fs.mkdirSync(`./img/serversImg/${interaction.guild.id}temp`)
-		// start the timer for this function
-		start = Date.now();
 		// this grabs the return of the function.
-		const imgUrl1 = await URLimg(urlImgUser1, start)
-		start = Date.now();
-		const imgUrl2 = await URLimg(urlImgUser2, start)
-		start = Date.now();
+		const imgUrl1 = await URLimg(urlImgUser1)
+		const imgUrl2 = await URLimg(urlImgUser2)
 		// this calls the compositeImage function
 		await compositeImages(
 			imgUrl1,
 			imgUrl2,
 			'./img/back-img.png',
 			`./img/serversImg/${interaction.guild.id}temp`,
-			start,
-			Math.floor(Math.random() * 101))
-		await wait(200);
-		// reply to the interaction with the generated file.
-		try{
-			const fileImage = new AttachmentBuilder(`./img/serversImg/${interaction.guild.id}temp/out.png`);
-			const exampleEmbed = new EmbedBuilder()
-        	    .setColor(0x0099FF)
-        	    .setTitle(interaction.commandName)
-        	    .setDescription(`${user1}💪${user2}`)
-        		.setImage('attachment://out.png')
-        	    .setFooter({ text: `${interaction.member.displayName}`});
-        	interaction.reply({ embeds: [exampleEmbed], files: [fileImage]});
-		}catch(err){
-			error.execute(interaction,`The bot couldn't render the image successfully pls try again`);
-		}
+			timer,
+			Math.floor(Math.random() * 101),
+			interaction,
+			user1, 
+			user2
+		)
 	},
 };
