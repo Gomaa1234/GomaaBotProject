@@ -107,7 +107,7 @@ async function compositeImages(img1, img2, backImg, dir, t, num, interaction,use
 					const exampleEmbed = new EmbedBuilder()
 						.setColor(0x0099FF)
 						.setTitle(interaction.commandName)
-						.setDescription(`${user1}❤️${user2}`)
+						.setDescription(`${user1}💪${user2}`)
 						.setImage('attachment://out.png')
 						.setFooter({ text: `${interaction.member.displayName}`});
 					interaction.reply({ embeds: [exampleEmbed], files: [fileImage]});
