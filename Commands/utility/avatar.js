@@ -1,6 +1,13 @@
-const { SlashCommandBuilder } = require('discord.js');
-const message = require('../../EmbedMessages/Message.js')
-const error = require('../../EmbedMessages/Error.js')
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+function EmbedMsg(interaction, msg,url){
+	const exampleEmbed = new EmbedBuilder()
+            .setColor(0x0099FF)
+            .setTitle(interaction.commandName)
+            .setDescription(msg)
+			.setImage(url)
+            .setFooter({ text: `${interaction.member.displayName}`});
+        interaction.reply({ embeds: [exampleEmbed] });
+}	
 module.exports = {
 	data: new SlashCommandBuilder()
 		// info about the command like Name, Description, User Options, etc.
@@ -11,7 +18,7 @@ module.exports = {
 		// gets user
 		const user = interaction.options.getUser('target');
 		// reply with the users avatar
-		if (user) return interaction.reply(`${user.username}'s avatar: ${user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 })}`);
-		return message.execute(interaction,`Your avatar: ${interaction.user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 })}`);
+		if (user) return EmbedMsg(interaction,`${user.username}'s avatar:`, user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 }));
+		return EmbedMsg(interaction,`Your Avatar:`,interaction.user.displayAvatarURL({ dynamic: true, format: 'png', size: 1024 }))
 	},
 };

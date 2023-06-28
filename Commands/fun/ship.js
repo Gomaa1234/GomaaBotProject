@@ -4,7 +4,6 @@ const fs = require('fs');
 const sharp = require('sharp');
 const wait = require('node:timers/promises').setTimeout;
 const { PositionShip } = require('../../imagePos.json');
-const message = require('../../EmbedMessages/Message.js')
 const error = require('../../EmbedMessages/Error.js')
 // this converts url to a base 64
 async function URLimg(url, time){
@@ -126,6 +125,7 @@ module.exports = {
 		// grabs all the options in the interaction.
 		const user1 = interaction.options.getUser('1st-user');
 		const user2 = interaction.options.getUser('2nd-user');
+		if(user1===null || user2 === null) error.execute(interaction,`You need to add at least 2 people to use this command`)
 		// this grabs the urls of the users profile pics
 		const urlImgUser1 = `${user1.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
 		const urlImgUser2 = `${user2.displayAvatarURL({ dynamic: true, format: 'png', size: 256})}`;
@@ -149,13 +149,17 @@ module.exports = {
 			Math.floor(Math.random() * 101))
 		await wait(200);
 		// reply to the interaction with the generated file.
-		const fileImage = new AttachmentBuilder(`./img/serversImg/${interaction.guild.id}temp/out.png`);
-		const exampleEmbed = new EmbedBuilder()
-            .setColor(0x0099FF)
-            .setTitle(interaction.commandName)
-            .setDescription(`${user1}❤️${user2}`)
-        	.setImage('attachment://out.png')
-            .setFooter({ text: `${interaction.member.displayName}`});
-        interaction.reply({ embeds: [exampleEmbed], files: [fileImage]});
+		try{
+			const fileImage = new AttachmentBuilder(`./img/serversImg/${interaction.guild.id}temp/out.png`);
+			const exampleEmbed = new EmbedBuilder()
+        	    .setColor(0x0099FF)
+        	    .setTitle(interaction.commandName)
+        	    .setDescription(`${user1}❤️${user2}`)
+        		.setImage('attachment://out.png')
+        	    .setFooter({ text: `${interaction.member.displayName}`});
+        	interaction.reply({ embeds: [exampleEmbed], files: [fileImage]});
+		}catch{
+			error.execute(interaction,`The bot couldn't render the image successfully pls try again`);
+		}
 	},
 };
