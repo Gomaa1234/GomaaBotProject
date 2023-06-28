@@ -2,7 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discor
 const axios = require('axios');
 const fs = require('fs');
 const sharp = require('sharp');
-const wait = require('node:timers/promises').setTimeout;
 const { PositionBro } = require('../../imagePos.json');
 const error = require('../../EmbedMessages/Error.js')
 // this converts url to a base 64
@@ -89,7 +88,7 @@ async function compositeImages(img1, img2, backImg, dir, t, num, interaction,use
 					left: PositionBro[randomInt].x2,
 				},
 				{
-					input: `./img/img-temple/ship/${randomInt + 1}.png`,
+					input: `./img/img-temple/bro/${randomInt + 1}.png`,
 					top: 0,
 					left: 0,
 				},
