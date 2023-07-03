@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discor
 const axios = require('axios');
 const fs = require('fs');
 const sharp = require('sharp');
+const wait = require('node:timers/promises').setTimeout;
 const { PositionBro } = require('../../imagePos.json');
 const error = require('../../EmbedMessages/Error.js')
 // this converts url to a base 64
