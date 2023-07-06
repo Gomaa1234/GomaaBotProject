@@ -13,7 +13,7 @@ module.exports = {
 		fetch(url, settings)
 			.then(res => res.json())
 			.then((json) => {
-				interaction.reply(json.preview[json.preview.length-1])
+				interaction.reply(json.url)
 		});
 	},
 };
