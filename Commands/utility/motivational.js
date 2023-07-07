@@ -18,6 +18,6 @@ module.exports = {
 	async execute(interaction) {
         let randomInt = null
 		randomInt = Math.floor(Math.random() * Quotes.quotes.length);
-		EmbedMsg(interaction,Quotes.quotes[randomInt].quote,Quotes.quotes[randomInt].author)
+		EmbedMsg(interaction,Quotes.quotes[randomInt].text,Quotes.quotes[randomInt].from)
 	},
 };
