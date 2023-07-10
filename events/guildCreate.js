@@ -48,6 +48,7 @@ module.exports = {
                 const jsonData = `{
                     "guildId": "${guild.id}",
                     "modChannel": "add later",
+                    "TicketCategory": "add later",
                     "FunQuotes": [
                         "Never gonna give you up",
                         "Never gonna let you down",
