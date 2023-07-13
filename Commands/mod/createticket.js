@@ -16,11 +16,31 @@ module.exports = {
             fs.readFile(pathJson, async (err, fileData) => {
                 let file = JSON.parse(fileData);
                 let parentTicket = file.TicketCategory;
-                guild.channels.create({
-                    name: `${interaction.member.displayName}-Private-Channel`,
-                    type: ChannelType.GuildText,
-                    parent: parentTicket,
-                });
+                if(interaction.guild.channels.exists('name', `${interaction.member.displayName}-Private-Channel`)){
+                    try{
+                        guild.channels.create({
+                            name: `${interaction.member.displayName}-Private-Channel`,
+                            type: ChannelType.GuildText,
+                            parent: parentTicket,
+                            permissionOverwrites: [
+                                {
+                                    id: interaction.guild.id,
+                                    deny: [PermissionsBitField.Flags.ViewChannel],
+                                },
+                                {
+                                    id: interaction.user.id,
+                                    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+                               },
+                            ]
+                        });
+                        message.execute(interaction,'The channel has created successfully')
+                    }catch(err){
+                        error.execute(interaction,'This command had a error while executing. \n Please try later. ')
+                    }
+                }else
+                {
+                    error.execute(interaction,'This Channel Already exist sorry.')
+                }
             })
         }
 	},
