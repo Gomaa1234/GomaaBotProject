@@ -53,7 +53,8 @@ module.exports = {
                         "Never gonna give you up",
                         "Never gonna let you down",
                         "01000101 00110110 00110010 00110001"
-                    ]
+                    ],
+                    "ServerTicketClientId":[]
                 }`;
                 // parse json
                 var jsonObj = JSON.parse(jsonData);

@@ -4,6 +4,7 @@ const error = require('../../EmbedMessages/Error.js')
 const wait = require('node:timers/promises').setTimeout;
 const fs = require('fs');
 const path = require('node:path');
+const { exit } = require('node:process');
 module.exports = {
 	data: new SlashCommandBuilder()
 	// info about the command like Name, Description, etc.
@@ -16,8 +17,15 @@ module.exports = {
             fs.readFile(pathJson, async (err, fileData) => {
                 let file = JSON.parse(fileData);
                 let parentTicket = file.TicketCategory;
-                const Channel = await interaction.guild.channels.cache.find(channel => channel.name === `${interaction.member.displayName}-Private-Channel`);
-                if (Channel == false) {
+                let channelExist = false
+                for(i = 0; i<file.ServerTicketClientId.length; i++){
+                    if(file.ServerTicketClientId[i] == interaction.member.id){
+                        error.execute(interaction,'This command had a error while executing. \n Please try later. ') 
+                        channelExist = true
+                        break;
+                    }
+                }
+                if(!channelExist){
                     try{
                         guild.channels.create({
                             name: `${interaction.member.displayName}-Private-Channel`,
@@ -35,12 +43,14 @@ module.exports = {
                             ]
                         });
                         message.execute(interaction,'The channel has created successfully')
+                        file.ServerTicketClientId.push(`${interaction.member.id}`);
+                        var json = JSON.stringify(file, null);
+                        fs.writeFile(pathJson, json, 'utf8', function (err) {
+                            console.log("JSON file has been saved.");
+                        });
                     }catch(err){
                         error.execute(interaction,'This command had a error while executing. \n Please try later. ')
                     }
-                }
-                else{
-                    error.execute(interaction,'This command had a error while executing. \n Please try later. ')
                 }
             })
         }
