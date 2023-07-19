@@ -1,10 +1,8 @@
 const { SlashCommandBuilder, PermissionsBitField, ChannelType } = require('discord.js');
 const message = require('../../EmbedMessages/Message.js')
 const error = require('../../EmbedMessages/Error.js')
-const wait = require('node:timers/promises').setTimeout;
 const fs = require('fs');
 const path = require('node:path');
-const { exit } = require('node:process');
 module.exports = {
 	data: new SlashCommandBuilder()
 	// info about the command like Name, Description, etc.
