@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder} = require('discord
 const axios = require('axios');
 const fs = require('fs');
 const sharp = require('sharp');
+const wait = require('node:timers/promises').setTimeout;
 const { PositionShip } = require('../../imagePos.json');
 const error = require('../../EmbedMessages/Error.js')
 // this converts url to a base 64
@@ -43,7 +44,10 @@ const compositeImages = async (img1, img2, backImg, dir, t, num, interaction, us
 	await fs.readdir(path, (err, files) => {
 	  randomInt = Math.floor(Math.random() * files.length);
 	});
-  
+	await wait(10)
+	const color = ["#FF0D0D", "#FF4E11", "#FF8E15", "#FAB733", "#ACB334", "#69B34C","#33CC33"];
+	// gets color depending of the variable num.
+	const i = getColorId(color,num)
 	// Create a SVG image with text on it with color and variable num.
 	const svgImage = `
 	  <svg width="1024" height="512">
